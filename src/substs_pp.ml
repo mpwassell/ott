@@ -1448,13 +1448,15 @@ let pp_subst_rule : subst -> pp_mode -> syntaxdefn -> nontermroot list -> rule -
       r_fun_clauses = clauses } :: list_funcs
 
 let subst_manifestly_needed subst xd ntr p = 
-  if subst.sb_this=ntr then 
-    match p.prod_es with 
-    | [ Lang_nonterm (ntrp,(ntr,suff)) ]  
-      when (subst.sb_that = Ntr ntrp)  -> true
-    | [ Lang_metavar (mvrp,(mvr,suff)) ] 
-      when (subst.sb_that = Mvr mvrp) -> true
-    | _ -> false 
+  if subst.sb_this=ntr then
+    List.exists (fun ntmv ->
+        match ntmv with
+        |  Lang_nonterm (ntrp,(ntr,suff)) 
+             when (subst.sb_that = Ntr ntrp)  -> true
+        |  Lang_metavar (mvrp,(mvr,suff)) 
+             when (subst.sb_that = Mvr mvrp) -> true
+        | _ -> false
+      ) p.prod_es    
   else
     false
 

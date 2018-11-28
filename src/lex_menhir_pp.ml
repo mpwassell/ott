@@ -582,7 +582,7 @@ let generate_aux_info_for_prod generate_aux_info r p =
 
 
 let pp_pattern_prod r p generate_aux_info_here element_data = 
-  let element_data' = element_data @ if generate_aux_info_for_prod generate_aux_info_here r p then [aux_constructor_element] else [] in
+  let element_data' = (if generate_aux_info_for_prod generate_aux_info_here r p then [aux_constructor_element] else []) @ element_data in
   let inner_pattern = 
     String.capitalize p.prod_name 
     ^ 
@@ -592,7 +592,7 @@ let pp_pattern_prod r p generate_aux_info_here element_data =
       | _ -> "("^ String.concat "," args ^ ")" )
   in
   match aux_constructor generate_aux_info_here r p with
-  | Some aux_con -> aux_con ^ "(" ^ inner_pattern ^ "," ^ ott_menhir_loc^")"
+  | Some aux_con -> aux_con ^ "(" ^ ott_menhir_loc ^ "," ^ inner_pattern^")"
   | None -> inner_pattern
 
 
@@ -633,7 +633,7 @@ let pp_menhir_prod yo generate_aux_info_here xd ts r p =
 
     (* now the real work *)
     let element_data = element_data_of_prod ts p in 
-    let element_data' = element_data @ if generate_aux_info_for_prod generate_aux_info_here r p then [aux_constructor_element] else [] in
+    let element_data' = (if generate_aux_info_for_prod generate_aux_info_here r p then [aux_constructor_element] else []) @ element_data in
     let ppd_action = 
       let es' = Grammar_pp.apply_hom_order (Menhir yo) xd p in
       if p.prod_sugar || (has_hom "quotient-remove" p.prod_homs && has_hom "ocaml" p.prod_homs) || r.rule_phantom then 
