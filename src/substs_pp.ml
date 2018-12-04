@@ -1447,7 +1447,10 @@ let pp_subst_rule : subst -> pp_mode -> syntaxdefn -> nontermroot list -> rule -
       r_fun_header = header;
       r_fun_clauses = clauses } :: list_funcs
 
-let subst_manifestly_needed subst xd ntr p = 
+let subst_manifestly_needed subst xd ntr p =
+  (*Printf.eprintf "subst_manifestly_needed this=<%s> ntr=<%s>\n"
+                 (Grammar_pp.pp_nontermroot  pp_ascii_opts_default xd subst.sb_this)
+                 (Grammar_pp.pp_nontermroot pp_ascii_opts_default xd ntr);*)
   if subst.sb_this=ntr then
     List.exists (fun ntmv ->
         match ntmv with
@@ -1916,6 +1919,7 @@ let pp_freevar_prod
       let funcs = [] (* REALLY??? *) in
       (!dependencies, (p.prod_name, lhs,rhs), funcs)  in
 
+    Printf.eprintf "free_var p.prod_name = <%s>\n" p.prod_name;
     match p.prod_es with 
     | [ Lang_nonterm (ntrp,(ntr,suff)) ]  
       when (rule_ntr_name=fv.fv_this(*root_of(this_var)*) && fv.fv_that = Ntr ntrp) ->
@@ -2059,13 +2063,14 @@ let pp_freevar_rule : freevar -> pp_mode -> syntaxdefn -> nontermroot list -> ru
 (*   | Mvr mvr -> MvrSet.mem mvr (Auxl.primary_mvrs_used_in_prod p) *)
 
 let freevar_manifestly_needed fv xd ntr p = 
-  if fv.fv_this=ntr then 
-    match p.prod_es with 
-    | [ Lang_nonterm (ntrp,(ntr,suff)) ]  
+  if fv.fv_this=ntr then
+    List.exists (fun ntmv -> 
+    match ntmv with 
+    |  Lang_nonterm (ntrp,(ntr,suff))   
       when (fv.fv_that = Ntr ntrp)  -> true
-    | [ Lang_metavar (mvrp,(mvr,suff)) ] 
+    |  Lang_metavar (mvrp,(mvr,suff)) 
       when (fv.fv_that = Mvr mvrp) -> true
-    | _ -> false 
+    | _ -> false ) p.prod_es
   else
     false
 
