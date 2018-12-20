@@ -1,0 +1,19 @@
+embed
+{{ cgen
+open Crowbar
+
+let x_gen : string gen = const "x"
+
+}}
+
+% minimal
+metavar termvar, x
+ ::=     {{ ocaml string }} {{ cgen x_gen }}
+
+grammar
+t :: 'T_' ::=              
+  | x            ::  :: Var
+  | \ x . t      ::  :: Lam
+  | t t'         ::  :: App 
+  | ( t )        :: S:: Paren {{ ocaml [[t]] }}
+  | { t / x } t' :: M:: Tsub  {{ ocaml (subst t x t') }}

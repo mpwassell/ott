@@ -398,7 +398,7 @@ let allowable_hom_data =
   [ 
     ( Hu_root    , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"ocaml"], 
                     "nonterminal, metavar or indexvar root"));
-    ( Hu_metavar , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"ocaml";"com";"coq-equality";"lex";"texvar";"isavar";"holvar";"lemvar";"ocamlvar";"repr-locally-nameless";(*"repr-nominal";*)"phantom";"ocamllex";"ocamllex-remove"],
+    ( Hu_metavar , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"ocaml";"com";"coq-equality";"lex";"texvar";"isavar";"holvar";"lemvar";"ocamlvar";"repr-locally-nameless";(*"repr-nominal";*)"phantom";"ocamllex";"ocamllex-remove"; "cgen"],
                     "metavar declaration"));
     ( Hu_rule    , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"ocaml";"com";"coq-equality";"coq-universe";(*"icht";*)"icho";"ichlo";"ich";"ichl";"ic";"ch";"ih";"phantom";"aux";"auxparam";"menhir-start";"quotient-with";"pp";"pp-raw"],
                     "rule"));
@@ -428,7 +428,8 @@ let embed_allowable_homs = ["coq";"coq-lib";"coq-preamble";
                             "tex";"tex-preamble";"tex-wrap-pre";"tex-wrap-post";
                             (*"twf";*)
                             "ocaml";"ocaml-preamble";
-                            "menhir"]
+                            "menhir";
+                            "cgen"]
 
 let list_form_allowable_homs =["isa";"coq";"hol";"lem";"ic";"ch";"ih";"ich";"ichl";"icho";"ichlo";(*"icht";*)"coq-struct";"ocaml"] 
 
