@@ -640,7 +640,7 @@ let pp_menhir_prod yo generate_aux_info_here xd ts r p =
         (* ocaml hom case *)
         (* to do the proper escaping of nonterms within the hom, we need to pp here, not reuse the standard machinery *)
 "(*Case 1*) " ^ 
-        let hs = (match Auxl.hom_spec_for_hom_name "ocaml" p.prod_homs with Some hs -> hs | None -> raise (Failure "no ocaml hom")) in
+        let hs = (match Auxl.hom_spec_for_hom_name "ocaml" p.prod_homs with Some hs -> hs | None -> raise (Failure ("no ocaml hom for " ^ p.prod_name))) in
         let es'' =  (* remove terminals from es to get Hom_index indexing right *)
       	(List.filter
            (function 
@@ -781,7 +781,7 @@ let pp_pp_raw_prod yo generate_aux_info_here xd ts r p =
 
     let ppd_rhs = 
       (match aux_constructor generate_aux_info_here r p with
-      | Some _ -> " string \"[\" ^^ string (pp_raw_l "^ott_menhir_loc^") ^^ string \"]\" ^^ "
+      | Some s -> " string \"[\" ^^ string (pp_raw_l "^s^ott_menhir_loc^") ^^ string \"]\" ^^ "
       | None -> "") 
       ^
       "string \"" ^ String.capitalize p.prod_name ^ "\"" 
