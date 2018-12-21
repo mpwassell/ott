@@ -1,0 +1,36 @@
+% Testing various list forms and mutual recursion 
+
+embed
+{{ cgen
+open Crowbar
+open Test02
+
+let termvar_gen = lazy (const "x")
+
+let pair (g1 : 'a gen) (g2 : 'b gen) : ('a*'b) gen = map [ g1 ; g2 ] (fun x y -> (x,y))        
+
+
+}}
+
+% minimal
+metavar termvar, x
+ ::=     {{ ocaml string }} {{ cgen x_gen }}
+
+indexvar index, i, j, n, m  ::= {{ ocaml int }}
+
+
+grammar
+
+p :: 'P_' ::=
+  | x         :: :: Var
+  | ( p1 , p2 ) :: :: Pair
+
+pe :: 'PE_' ::=
+  | p = e :: :: PE
+
+e :: 'E_' ::=              
+  | x            ::  :: Var
+  | ( e1 , .. , en ) :: :: Tuple
+  | lets x1 = e1 and .. and xn = en  in e :: :: Lets
+  | let pe in e :: :: Let
+  | match e with pe1 .. pen :: :: Match

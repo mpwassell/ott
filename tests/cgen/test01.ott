@@ -1,8 +1,9 @@
 embed
 {{ cgen
 open Crowbar
+open Test01
 
-let x_gen : string gen = const "x"
+let termvar_gen = lazy (const "x")
 
 }}
 
