@@ -1,4 +1,4 @@
-% Testing various list forms and mutual recursion 
+% Testing various list forms, mutual recursion and some forms from sail.ott
 
 embed
 {{ cgen
@@ -22,15 +22,29 @@ indexvar index, i, j, n, m  ::= {{ ocaml int }}
 grammar
 
 p :: 'P_' ::=
-  | x         :: :: Var
-  | ( p1 , p2 ) :: :: Pair
+  | x         :: :: var
+  | ( p1 , p2 ) :: :: pair
 
 pe :: 'PE_' ::=
   | p = e :: :: PE
 
 e :: 'E_' ::=              
-  | x            ::  :: Var
-  | ( e1 , .. , en ) :: :: Tuple
-  | lets x1 = e1 and .. and xn = en  in e :: :: Lets
-  | let pe in e :: :: Let
-  | match e with pe1 .. pen :: :: Match
+  | x            ::  :: var
+  | ( e1 , .. , en ) :: :: tuple
+  | lets x1 = e1 and .. and xn = en  in e :: :: lets
+  | let pe in e :: :: let
+  | match e with pe1 .. pen :: :: match
+  | undef :: :: undef
+
+prec :: '' ::=
+   | infix :: :: Infix
+   | infixl :: :: InfixL
+   | infixr :: :: InfixR
+
+id :: '' ::=
+  {{ com Identifier }}
+  | x                           :: :: id
+  | ( deinfix x )                       :: D :: deIid {{ com remove infix status }}
+  | bool      		   	 :: M :: bool {{ com built in type identifiers }} {{ ichlo (Id "bool") }}
+  | bit				 :: M :: bit {{ ichlo (Id "bit") }}
+
