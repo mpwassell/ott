@@ -6,6 +6,10 @@
   TODO - For metavars with Ocaml types specified; can we pp a generic gen function?
     Go through special cases in sail.ott and see if we should/can extend cgen to handle them
     Add documentation
+
+   Distinguish between different dot forms - use list or list1 from crowbar
+
+   Fault if zero branches in choose
  *)
 open Types
 
@@ -40,7 +44,7 @@ and pp_list_form (elb : element_list_body) : (string*string) list =
                         | _ -> "pair " ^ s ^ " " ^ (mk_pairs xs) ^ "")
     | _ -> ""
   in
-  [ ("list ( " ^ (mk_pairs elb.elb_es) ^ ")" , "xx") ]
+  [ ("list1 ( " ^ (mk_pairs elb.elb_es) ^ ")" , "xx") ]
 
 let pp_ctor p = String.capitalize_ascii (p.prod_name)
             
@@ -61,12 +65,16 @@ let pp_prod_gen fd p = match (cgen_hom p) with
                                                            | Hom_string s -> output_string fd s
                                                            | _ -> () ) hs);
             output_string fd "\n"
-                   
+
+let pp_skip_prod p = match (cgen_hom p) with
+  | None -> p.prod_meta || p.prod_sugar
+  | Some _ -> false
                    
 let pp_rule_gen fd fun_prefix r =
   let fname = (r.rule_ntr_name) ^ "_gen" in
+  let prods = List.filter (fun p -> not (pp_skip_prod p)) r.rule_ps in 
   output_string fd ( fun_prefix  ^ fname ^ " = lazy (choose [ \n");
-  List.iter (fun p -> if p.prod_meta || p.prod_sugar then () else pp_prod_gen fd p) r.rule_ps;
+  List.iter (pp_prod_gen fd) prods;
   output_string fd "])\n"
                 
                 
