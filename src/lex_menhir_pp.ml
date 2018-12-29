@@ -592,7 +592,7 @@ let pp_pattern_prod r p generate_aux_info_here element_data =
       | _ -> "("^ String.concat "," args ^ ")" )
   in
   match aux_constructor generate_aux_info_here r p with
-  | Some aux_con -> aux_con ^ "(" ^ ott_menhir_loc ^ "," ^ inner_pattern^")"
+  | Some aux_con -> aux_con ^ "(" ^ inner_pattern ^ "," ^ ott_menhir_loc ^ ")"
   | None -> inner_pattern
 
 
@@ -781,7 +781,7 @@ let pp_pp_raw_prod yo generate_aux_info_here xd ts r p =
 
     let ppd_rhs = 
       (match aux_constructor generate_aux_info_here r p with
-      | Some s -> " string \"[\" ^^ string (pp_raw_l "^s^ott_menhir_loc^") ^^ string \"]\" ^^ "
+      | Some s -> " string \"[\" ^^ string (pp_raw_l "^ott_menhir_loc^") ^^ string \"]\" ^^ "
       | None -> "") 
       ^
       "string \"" ^ String.capitalize p.prod_name ^ "\"" 
