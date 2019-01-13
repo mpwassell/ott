@@ -76,12 +76,18 @@ let pp_rule_gen fd fun_prefix r =
   output_string fd ( fun_prefix  ^ fname ^ " = lazy (choose [ \n");
   List.iter (pp_prod_gen fd) prods;
   output_string fd "])\n"
-                
+
+let init_list n ~f =
+  let rec init_list' i n f =
+    if i >= n then []
+    else (f i) :: (init_list' (i+1) n f)
+  in init_list' 0 n f
+  
                 
 let pp_cgen_generators fd sd =
   let rlist = List.filter (fun r -> not (r.rule_judgement || r.rule_semi_meta || r.rule_meta || r.rule_phantom)) sd.xd_rs in 
   List.iter  (fun (pr,r) ->  pp_rule_gen fd pr r)
-             (List.combine ("let rec " :: (List.init (List.length rlist - 1) (fun _ -> " and "))) rlist)
+             (List.combine ("let rec " :: (init_list (List.length rlist - 1) (fun _ -> " and "))) rlist)
 
 let pp_cgen_lazy_pat fd sd = List.iter
              (fun r -> if r.rule_judgement || r.rule_semi_meta || r.rule_meta || r.rule_phantom then

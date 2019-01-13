@@ -95,7 +95,11 @@ let merge_fragments = ref false
 let picky_multiple_parses = ref false
 let caml_include_terminals = ref false
 
+(* Name of file to export Crowbar generator code for grammar *)
 let cgen_filename_opt = ref (None : string option )
+
+(* Prefix of file to export datatypes for inductive rule witnesses and Crowbar generator code*)
+let witness_filename_opt = ref (None : string option )
                                  
 let options = Arg.align [
 
@@ -285,7 +289,12 @@ let options = Arg.align [
   ("-cgen",
    Arg.String (fun s -> cgen_filename_opt := Some s),
    "<filename>  (experimental) Name of file to output containing Crowbar generator code for grammar");
-] 
+  
+  ("-witness",
+   Arg.String (fun s -> witness_filename_opt := Some s),
+   "<filename>  (experimental) Prefix of file name to export datatypes and Crowbar generator code for rules");
+
+                ] 
 
 let usage_msg = 
     ("\n"
@@ -828,7 +837,7 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
     let _ = close_out fd_dst in
     ()
   in
-
+ Printf.eprintf "HELLO 1\n";
   (List.iter (filter m_tex) (!tex_filter_filenames));
   (List.iter (filter m_coq) (!coq_filter_filenames));
   (List.iter (filter m_isa) (!isa_filter_filenames));
@@ -836,12 +845,18 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
   (List.iter (filter m_lem) (!lem_filter_filenames));
   (List.iter (filter m_twf) (!twf_filter_filenames));
   (List.iter (filter m_caml) (!caml_filter_filenames));
-
+ Printf.eprintf "HELLO 2\n";
   (* Generate Crowbar *)
-  match !cgen_filename_opt with
+  (match !cgen_filename_opt with
     None -> ()
-  | Some s -> Crowbar.generate_cgen sd.syntax s;
-  
+  | Some s -> Crowbar.generate_cgen sd.syntax s);
+
+
+  (* Generate witness code *)
+  (match !witness_filename_opt with
+    None -> ()
+  | Some s -> Printf.printf "HELLO\n"; Witness.generate sd.relations s);
+              
 (*  let xd,rdcs = Grammar_typecheck.check_and_disambiguate targets document in  *)
 
   if !process_defns then begin
