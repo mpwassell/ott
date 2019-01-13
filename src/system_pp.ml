@@ -202,8 +202,10 @@ let pp_struct_entry fd m sd xd_expanded lookup stre : unit =
       output_string fd pp_loc;
       output_string fd (Grammar_pp.pp_metavardefn m xd mvd)
 
-  | Struct_rs ntrs -> 
-      let rs = List.map (fun ntr -> Auxl.rule_of_ntr xd_expanded ntr) ntrs in
+  | Struct_rs ntrs ->
+
+     let rs = List.map (fun ntr -> Auxl.rule_of_ntr xd_expanded ntr) ntrs in
+     Printf.eprintf "Struct_rs rs.length %d\n" (List.length rs);
       let s = List.flatten (List.map (function r -> r.rule_loc) rs) in
       let pp_locs = if !Global_option.output_source_locations >=2 then Grammar_pp.pp_source_location m s else "" in
       output_string fd pp_locs;
@@ -211,6 +213,7 @@ let pp_struct_entry fd m sd xd_expanded lookup stre : unit =
       | Rdx ro ->
           output_string fd ("(define-language "^ro.ppr_default_language^"\n");
       | _ -> () );
+      output_string fd "HERE\n";
       output_string fd (Grammar_pp.pp_rule_list m xd_expanded rs);
       ( match m with
         | Rdx ro ->
@@ -526,6 +529,7 @@ let pp_systemdefn_core_io m sd lookup oi merge_fragments =
       (* special case if there is only one i file *)
       match oi with
       | (o,(i::[]))::[] ->
+          Printf.eprintf "One ifile\n";
           let fn = Auxl.filename_check m o in 
           let fd = open_out o in
           pp_systemdefn_structure fd m sd xd_expanded ([std_preamble_embed fn]) lookup;

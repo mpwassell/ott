@@ -768,6 +768,9 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
             | _ -> Auxl.error "coq type-name avoidance must be in {0,1,2}" ) in
           System_pp.pp_systemdefn_core_io m_coq sd lookup fi !merge_fragments
       | "isa" ->
+         List.iter (fun (x,xs) -> Printf.eprintf "fi=%s\n" x;
+                                  List.iter (fun x -> Printf.eprintf "  =%s\n" x) xs) fi;
+         List.iter (fun (s,se) -> Printf.eprintf "struct = %s\n" s; Witness.pp_ascii_struct_entry se) sd.structure;
           System_pp.pp_systemdefn_core_io m_isa sd lookup fi !merge_fragments
       | "hol" ->
           System_pp.pp_systemdefn_core_io m_hol sd lookup fi !merge_fragments
@@ -837,7 +840,7 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
     let _ = close_out fd_dst in
     ()
   in
- Printf.eprintf "HELLO 1\n";
+
   (List.iter (filter m_tex) (!tex_filter_filenames));
   (List.iter (filter m_coq) (!coq_filter_filenames));
   (List.iter (filter m_isa) (!isa_filter_filenames));
@@ -845,17 +848,17 @@ let output_stage (sd,lookup,sd_unquotiented,sd_quotiented_unaux) =
   (List.iter (filter m_lem) (!lem_filter_filenames));
   (List.iter (filter m_twf) (!twf_filter_filenames));
   (List.iter (filter m_caml) (!caml_filter_filenames));
- Printf.eprintf "HELLO 2\n";
-  (* Generate Crowbar *)
+
+  (* Generate Crowbar generator code for AST *)
   (match !cgen_filename_opt with
     None -> ()
   | Some s -> Crowbar.generate_cgen sd.syntax s);
 
 
-  (* Generate witness code *)
+  (* Generate witness code for rules *)
   (match !witness_filename_opt with
     None -> ()
-  | Some s -> Printf.printf "HELLO\n"; Witness.generate sd.relations s);
+  | Some s -> Printf.printf "HELLO\n"; Witness.generate sd.relations s sd.syntax sd);
               
 (*  let xd,rdcs = Grammar_typecheck.check_and_disambiguate targets document in  *)
 

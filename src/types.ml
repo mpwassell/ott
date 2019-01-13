@@ -300,13 +300,13 @@ and parsing_annotations = (* pas *)
 and backend = string
 
 and structure_entry = (* stre *)
-  | Struct_md of metavarroot 
-  | Struct_rs of nontermroot list
-  | Struct_srs of (nontermroot * nontermroot) list
-  | Struct_crs of (nontermroot * nontermroot * nontermroot) list
+  | Struct_md of metavarroot             
+  | Struct_rs of nontermroot list       (* Rules *)
+  | Struct_srs of (nontermroot * nontermroot) list  (* Sub-rules *)
+  | Struct_crs of (nontermroot * nontermroot * nontermroot) list  (* Context rules *)
   | Struct_axs of auxfn list
-  | Struct_sbs of (string * nontermroot * nt_or_mv_root) list 
-  | Struct_fvs of (string * nontermroot * nt_or_mv_root) list
+  | Struct_sbs of (string * nontermroot * nt_or_mv_root) list   (* Substitutions *)
+  | Struct_fvs of (string * nontermroot * nt_or_mv_root) list   (* Free variables *)
   | Struct_embed of embed  
   | Struct_fun_or_defnclass of fundefnclassname
 

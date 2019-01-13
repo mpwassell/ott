@@ -2748,7 +2748,7 @@ and pp_rule_list m xd rs =
   (* FZ why rs is a rule list instead of a rulename list? *)
   let ntrs_rs = List.map (fun r -> r.rule_ntr_name) rs in
 
-  (* print_endline ("** "^(Auxl.hom_name_for_pp_mode m)^" ** pp_rule_list: "^(String.concat " " ntrs_rs));  *)
+  Printf.eprintf "%s\n" ("** "^(Auxl.hom_name_for_pp_mode m)^" ** pp_rule_list: "^(String.concat " " ntrs_rs));  
 
   let int_rule_list_dep m xd rs td md fd =
     let rule_groups = 	  
@@ -2758,9 +2758,10 @@ and pp_rule_list m xd rs =
         (fun rg -> List.exists (fun ntr -> List.mem (Ntr ntr) rg) ntrs_rs)
         deps in
 
-    (* print_endline (String.concat " -- " *)
-    (*                  (List.map (fun rg -> (String.concat " " *)
-    (*                                          (List.map pp_plain_nt_or_mv_root rg))) rule_groups)); *)
+    Printf.eprintf "Rule grous len %d\n" (List.length rule_groups);
+    Printf.eprintf "%s\n"  (String.concat " -- " 
+                      (List.map (fun rg -> (String.concat " " 
+                                              (List.map pp_plain_nt_or_mv_root rg))) rule_groups)); 
 
     String.concat "" 
       ( List.map 
@@ -2842,6 +2843,7 @@ and pp_rule_list m xd rs =
       then String.concat "\n" (Auxl.option_map (pp_rule m xd) rs) ^ "\n" 
       else int_rule_list_dep m xd rs (fun rs -> "\n") "\n" ""
   | Isa io ->
+     Printf.eprintf "PP Rules List \n";
       int_rule_list_dep m xd rs 
         ( fun rs -> 
           if Auxl.rules_require_nominal m xd rs then "nominal_datatype " else "datatype ")
